@@ -1,8 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 
 // Define types
-type Cell = 0 | 1 | 2
-type Board = Cell[][]
+//type Cell = 0 | 1 | 2
+//type Board = Cell[][]
 
 export async function POST(request: NextRequest) {
     try {
