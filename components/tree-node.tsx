@@ -36,19 +36,16 @@ export function TreeNodeComponent({ node, onNodeClick }: TreeNodeProps) {
                 <div className="font-bold text-sm">{node.id.toUpperCase()}</div>
                 {node.value !== undefined && <div className="text-xs font-semibold">Val: {node.value}</div>}
 
-                {node.value === undefined &&
-                    (<>
-                        <div className="text-xs mt-1">
-                            <div>α: {formatValue(node.alpha)}</div>
-                            <div>β: {formatValue(node.beta)}</div>
-                        </div>
-                        <div
-                            className={`text-xs font-bold px-1 py-0.5 rounded mt-1 ${node.isMaximizing ? "bg-blue-200 text-blue-800" : "bg-red-200 text-red-800"}`}
-                        >
-                            {node.isMaximizing ? "MAX" : "MIN"}
-                        </div>
-                    </>)
-                }
+
+                <div className="text-xs mt-1">
+                    <div>α: {formatValue(node.alpha)}</div>
+                    <div>β: {formatValue(node.beta)}</div>
+                </div>
+                <div
+                    className={`text-xs font-bold px-1 py-0.5 rounded mt-1 ${node.isMaximizing ? "bg-blue-200 text-blue-800" : "bg-red-200 text-red-800"}`}
+                >
+                    {node.isMaximizing ? "MAX" : "MIN"}
+                </div>
 
                 {node.isPruned && (
                     <div className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1 rounded">PRUNED</div>
