@@ -1,9 +1,6 @@
-import { NextResponse } from 'next/server'
+import type { TimetableData } from "@/types/timetable"
 
-// Sample timetable data based on your interface
-
-
-const timetableData = {
+export const sampleTimetableData: TimetableData = {
     "1": {
         "Analyse num\u00e9rique": [
             {
@@ -718,13 +715,4 @@ const timetableData = {
             }
         ]
     }
-}
-
-
-export async function GET() {
-    try {
-        return NextResponse.json(timetableData)
-    } catch (error) {
-        return NextResponse.json({ error: 'Failed to fetch timetables', msg: error }, { status: 500 })
-    }
-}
+};

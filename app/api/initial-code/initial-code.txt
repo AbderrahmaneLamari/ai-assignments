@@ -1,0 +1,94 @@
+from aima3.logic import FolKB, expr, fol_fc_ask, fol_bc_ask
+from collections import defaultdict
+
+kb = FolKB()
+
+
+kb.tell(expr("Cough(x) & RunnyNose(x) & SoreThroat(x) ==> HasDisease(x, Cold)"))
+kb.tell(expr("Fever(x) & Headache(x) & Cough(x) & Fatigue(x) ==> HasDisease(x, Flu)"))
+kb.tell(expr("Fever(x) & Nausea(x) & Vomiting(x) ==> HasDisease(x, FoodPoisoning)"))
+kb.tell(expr("Fever(x) & Cough(x) & ShortnessOfBreath(x) & Fatigue(x) ==> HasDisease(x, COVID19)"))
+kb.tell(expr("Headache(x) & Nausea(x) & Fatigue(x) ==> HasDisease(x, Migraine)"))
+kb.tell(expr("Fever(x) & SoreThroat(x) & Headache(x) ==> HasDisease(x, StrepThroat)"))
+kb.tell(expr("Cough(x) & ShortnessOfBreath(x) & Fatigue(x) ==> HasDisease(x, Pneumonia)"))
+kb.tell(expr("RunnyNose(x) & Cough(x) & SoreThroat(x) ==> HasDisease(x, Allergy)"))
+
+
+kb.tell(expr("Cough(Ali)"))
+kb.tell(expr("RunnyNose(Ali)"))
+kb.tell(expr("SoreThroat(Ali)"))
+
+kb.tell(expr("Fever(Sara)"))
+kb.tell(expr("Headache(Sara)"))
+kb.tell(expr("Cough(Sara)"))
+kb.tell(expr("Fatigue(Sara)"))
+
+kb.tell(expr("Fever(Omar)"))
+kb.tell(expr("SoreThroat(Omar)"))
+kb.tell(expr("Headache(Omar)"))
+
+kb.tell(expr("Headache(Lina)"))
+kb.tell(expr("Nausea(Lina)"))
+kb.tell(expr("Fatigue(Lina)"))
+
+kb.tell(expr("Cough(Hassan)"))
+kb.tell(expr("RunnyNose(Hassan)"))
+kb.tell(expr("SoreThroat(Hassan)"))
+
+
+
+def query_fc_results(kb):
+    print("Diagnostics (using Forward Chaining):")
+    
+    
+    
+    
+    res = list(fol_fc_ask(kb, expr("HasDisease(x, y)")))
+    x = expr("x")
+    y = expr("y")   
+    grouped = defaultdict(set)
+
+    for entry in res:
+        if x in entry and y in entry:
+            grouped[entry[x]].add(entry[y])
+
+    # Convert sets to lists (optional)
+    grouped = {k: list(v) for k, v in grouped.items()}
+
+    # Print result
+    for person, diseases in grouped.items():
+        print(f"{person}: {diseases}")
+        
+
+
+
+def query_bc_results(kb):
+    print("\nDiagnostics (using Backward Chaining):")
+    
+    res = list(fol_bc_ask(kb, expr("HasDisease(x, y)")))
+    x = expr("x")
+    y = expr("y")   
+    
+    
+    grouped = defaultdict(set)
+
+    for entry in res:
+        if x in entry and y in entry:
+            grouped[entry[x]].add(entry[y])
+
+
+    grouped = {k: list(v) for k, v in grouped.items()}
+
+
+    for person, diseases in grouped.items():
+        print(f"{person}: {diseases}")
+
+
+
+
+if __name__ == "__main__":
+    query_fc_results(kb)
+
+    query_bc_results(kb)
+    
+    

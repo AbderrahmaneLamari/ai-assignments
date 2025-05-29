@@ -16,19 +16,24 @@ const ROWS = 6
 const COLS = 7
 
 const Connect4Game = () => {
+
     // Initialize empty board
     const createEmptyBoard = (): Board =>
         Array(ROWS)
             .fill(0)
             .map(() => Array(COLS).fill(0))
-
     const [board, setBoard] = useState<Board>(createEmptyBoard())
     const [gameStatus, setGameStatus] = useState<GameStatus>("playing")
     const [isLoading, setIsLoading] = useState(false)
     const [lastMove, setLastMove] = useState<{ row: number; col: number } | null>(null)
 
+    // await fetch("/api/connect4/new_game")
     // Reset game
-    const resetGame = () => {
+    const resetGame = async () => {
+        await fetch("/api/connect4/new_game", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        });
         setBoard(createEmptyBoard())
         setGameStatus("playing")
         setLastMove(null)
@@ -47,67 +52,6 @@ const Connect4Game = () => {
         return -1 // Column is full
     }
 
-    // Check for win
-    const checkWin = (board: Board, player: Player): boolean => {
-        // Check horizontal
-        for (let row = 0; row < ROWS; row++) {
-            for (let col = 0; col <= COLS - 4; col++) {
-                if (
-                    board[row][col] === player &&
-                    board[row][col + 1] === player &&
-                    board[row][col + 2] === player &&
-                    board[row][col + 3] === player
-                ) {
-                    return true
-                }
-            }
-        }
-
-        // Check vertical
-        for (let row = 0; row <= ROWS - 4; row++) {
-            for (let col = 0; col < COLS; col++) {
-                if (
-                    board[row][col] === player &&
-                    board[row + 1][col] === player &&
-                    board[row + 2][col] === player &&
-                    board[row + 3][col] === player
-                ) {
-                    return true
-                }
-            }
-        }
-
-        // Check diagonal (down-right)
-        for (let row = 0; row <= ROWS - 4; row++) {
-            for (let col = 0; col <= COLS - 4; col++) {
-                if (
-                    board[row][col] === player &&
-                    board[row + 1][col + 1] === player &&
-                    board[row + 2][col + 2] === player &&
-                    board[row + 3][col + 3] === player
-                ) {
-                    return true
-                }
-            }
-        }
-
-        // Check diagonal (up-right)
-        for (let row = 3; row < ROWS; row++) {
-            for (let col = 0; col <= COLS - 4; col++) {
-                if (
-                    board[row][col] === player &&
-                    board[row - 1][col + 1] === player &&
-                    board[row - 2][col + 2] === player &&
-                    board[row - 3][col + 3] === player
-                ) {
-                    return true
-                }
-            }
-        }
-
-        return false
-    }
-
     // Check if board is full (draw)
     const isBoardFull = (board: Board): boolean => {
         return board[0].every((cell) => cell !== 0)
@@ -117,85 +61,59 @@ const Connect4Game = () => {
     const handleUserMove = async (col: number) => {
         if (gameStatus !== "playing" || isLoading || isColumnFull(col)) return
 
-        // Find the next available row in the selected column
-        const row = findAvailableRow(col)
-        if (row === -1) return // Column is full
-
-        // Update board with user's move
-        const newBoard = board.map((r) => [...r])
-        newBoard[row][col] = 1 // User is player 1
-        setBoard(newBoard)
-        setLastMove({ row, col })
-
-        // Check if user won
-        if (checkWin(newBoard, 1)) {
-            setGameStatus("userWon")
-            toast.success("You won!")
-            return
-        }
-
-        // Check for draw
-        if (isBoardFull(newBoard)) {
-            setGameStatus("draw")
-            toast.info("It's a draw!")
-            return
-        }
-
-        // Make bot move
         setIsLoading(true)
         setGameStatus("waiting")
 
         try {
-            // Send the current board state and get bot's move
-            const response = await fetch("/api/connect4/move", {
+            const response = await fetch("/api/connect4/player_move", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ board: newBoard }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ column: col }),
             })
 
             if (!response.ok) {
-                throw new Error("Failed to get bot move")
+                const errorMessage = await response.json()
+
+                throw new Error(errorMessage.detail || "Failed to make move");
+
             }
 
             const data = await response.json()
-            const botCol = data.column
+            const invertedBoard = [...data.board].reverse();
+            // Update board
+            setBoard(invertedBoard)
 
-            // Apply bot's move
-            const botRow = findAvailableRow(botCol)
-            if (botRow !== -1) {
-                const finalBoard = newBoard.map((r) => [...r])
-                finalBoard[botRow][botCol] = 2 // Bot is player 2
-                setBoard(finalBoard)
-                setLastMove({ row: botRow, col: botCol })
-
-                // Check if bot won
-                if (checkWin(finalBoard, 2)) {
-                    setGameStatus("botWon")
-                    toast.info("The AI won!")
-                    return
-                }
-
-                // Check for draw after bot's move
-                if (isBoardFull(finalBoard)) {
-                    setGameStatus("draw")
-                    toast.info("It's a draw!")
-                    return
-                }
+            // Handle results
+            if (data.player_wins) {
+                setGameStatus("userWon")
+                toast.success("You won!")
+            } else if (data.ai_wins) {
+                setGameStatus("botWon")
+                toast.info("AI won!")
+            } else if (isBoardFull(invertedBoard)) {
+                setGameStatus("draw")
+                toast.info("It's a draw!")
+            } else {
+                setGameStatus("playing")
             }
 
-            setGameStatus("playing")
+            // Set last move (AI move if exists, otherwise player move)
+            if (data.ai_move !== null) {
+                const row = findAvailableRow(data.ai_move)
+                setLastMove({ row, col: data.ai_move })
+            } else {
+                const row = findAvailableRow(col)
+                setLastMove({ row, col })
+            }
         } catch (error) {
-            console.error("Error getting bot move:", error)
-            toast.error("Failed to get AI move. Please try again.")
-            // Revert to previous state if there's an error
-            setBoard(newBoard)
+            console.error("Move error:", error)
+            toast.error("Something went wrong. Try again.")
             setGameStatus("playing")
         } finally {
             setIsLoading(false)
         }
     }
+
 
     // Get cell color based on player
     const getCellColor = (cell: Cell) => {
@@ -245,18 +163,21 @@ const Connect4Game = () => {
 
                 {/* Game board */}
                 <div className="grid grid-cols-7 gap-1">
-                    {board.map((row, rowIndex) =>
-                        row.map((cell, colIndex) => (
-                            <div
-                                key={`${rowIndex}-${colIndex}`}
-                                className={`
-                  w-full aspect-square rounded-full 
-                  ${getCellColor(cell)} 
-                  ${isLastMove(rowIndex, colIndex) ? "ring-2 ring-offset-1 ring-white" : ""}
-                  transition-all duration-300
-                `}
-                            />
-                        )),
+                    {[...board].map((row, rowIndex) =>
+                        row.map((cell, colIndex) => {
+                            const actualRowIndex = ROWS - 1 - rowIndex // Adjust for reversed order
+                            return (
+                                <div
+                                    key={`${actualRowIndex}-${colIndex}`}
+                                    className={`
+                        w-full aspect-square rounded-full 
+                        ${getCellColor(cell)} 
+                        ${isLastMove(actualRowIndex, colIndex) ? "ring-2 ring-offset-1 ring-white" : ""}
+                        transition-all duration-300
+                    `}
+                                />
+                            )
+                        })
                     )}
                 </div>
             </div>

@@ -17,6 +17,12 @@ export default function Home() {
         <Link href="/minimax" className="text-blue-500 hover:text-blue-700 font-semibold">
           Go to Minimax Algorithm
         </Link>
+        <Link href="/sequence" className="text-blue-500 hover:text-blue-700 font-semibold">
+          Go to Number Sequence Game
+        </Link>
+        <Link href="/logic" className="text-blue-500 hover:text-blue-700 font-semibold">
+          Go to Logic
+        </Link>
       </div>
 
     </main>

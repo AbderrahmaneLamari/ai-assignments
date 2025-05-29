@@ -1,0 +1,270 @@
+.timetable-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.timetable-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.group-timetable {
+    margin-bottom: 40px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.group-timetable h3 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: 0;
+    padding: 15px 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.timetable {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.timetable th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 12px 8px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+    font-size: 0.9rem;
+}
+
+.timetable th:first-child {
+    background: #e9ecef;
+    font-weight: 700;
+}
+
+.time-slot {
+    background: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 8px;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    font-size: 0.85rem;
+    min-width: 100px;
+}
+
+.timetable-cell {
+    border: 1px solid #dee2e6;
+    padding: 8px;
+    vertical-align: top;
+    height: 100px;
+    min-width: 170px;
+    position: relative;
+}
+
+.course-entry {
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Different styles for different session types */
+.lecture-entry {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.td-entry {
+    background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+}
+
+.tp-entry {
+    background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+}
+
+.other-entry {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+}
+
+.course-entry:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.course-name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.course-type {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 6px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 4px;
+    text-transform: capitalize;
+}
+
+.teacher {
+    font-size: 0.7rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Legend for session types */
+.timetable-legend {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+.legend-color {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    margin-right: 6px;
+}
+
+.legend-lecture {
+    background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.legend-td {
+    background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+}
+
+.legend-tp {
+    background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .timetable-container {
+        padding: 10px;
+    }
+
+    .timetable-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .group-timetable h3 {
+        font-size: 1.2rem;
+        padding: 12px 15px;
+    }
+
+    .timetable {
+        font-size: 0.8rem;
+    }
+
+    .timetable th,
+    .time-slot {
+        padding: 8px 4px;
+    }
+
+    .timetable-cell {
+        min-width: 120px;
+        height: 70px;
+    }
+
+    .course-entry {
+        padding: 6px;
+    }
+
+    .course-name {
+        font-size: 0.75rem;
+    }
+
+    .course-type,
+    .teacher {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .timetable-container {
+        padding: 5px;
+    }
+
+    .timetable-container h2 {
+        font-size: 1.3rem;
+    }
+
+    .timetable-cell {
+        min-width: 100px;
+        height: 60px;
+    }
+
+    .course-name {
+        font-size: 0.7rem;
+    }
+
+    .course-type,
+    .teacher {
+        font-size: 0.6rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .timetable-container {
+        max-width: none;
+        padding: 0;
+    }
+
+    .group-timetable {
+        page-break-after: always;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+
+    .lecture-entry {
+        background: #d1e8ff !important;
+        color: #000 !important;
+    }
+
+    .td-entry {
+        background: #d1ffe8 !important;
+        color: #000 !important;
+    }
+
+    .tp-entry {
+        background: #ffd1d1 !important;
+        color: #000 !important;
+    }
+
+    .other-entry {
+        background: #e8d1ff !important;
+        color: #000 !important;
+    }
+
+    .course-entry:hover {
+        transform: none;
+    }
+}
