@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
-        <div style={{ display: 'flex', minHeight: '100vh' }}>
+        <div style={{ display: 'flex', minHeight: '100vh'}}>
           <aside
             style={{
               width: '200px',
@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           >
 
             <nav>
-              {routes.map((route, i) => (<div key={i}><Link key={i} href={route.dist}>{route.name}</Link> <br /></div>))}
+              {routes.map((route, i) => (<div key={i}><Link key={i} className="p-5 text-sm" href={route.dist}>{route.name}</Link> <br /></div>))}
             </nav>
           </aside>
 

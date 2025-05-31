@@ -1,5 +1,6 @@
 "use client"
 
+import CSPDocumentation from "@/components/CSPDocumentation"
 import Timetable from "@/components/timetable"
 import { sampleTimetableData } from "@/data/sampleData"
 
@@ -29,6 +30,7 @@ export default function TimetablePage() {
 
                 <Timetable data={sampleTimetableData} />
             </div>
+            <CSPDocumentation />
         </div>
     )
 }
