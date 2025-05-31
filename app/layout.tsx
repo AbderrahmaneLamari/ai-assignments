@@ -20,6 +20,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+
+  const routes = [{ dist: "/", name: "Home" },
+  { dist: "/connect4", name: "Connect4" },
+  { dist: "/logic", name: "Logic Last Exo" },
+  { dist: "/csp", name: "Time Table CSP" },
+  { dist: "/minimax", name: "Minimax Exo 4" },
+  { dist: "/sequence", name: "Sequence Exo 5" },
+  ];
+
+
   return (
     <html lang="en">
       <body style={{ margin: 0 }}>
@@ -31,19 +41,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
               padding: '1rem',
             }}
           >
-            <h2>Menu</h2>
+
             <nav>
-              <ul style={{ listStyle: 'none', padding: 0 }}>
-                <li>
-                  <Link href="/">Home</Link>
-                </li>
-                <li>
-                  <Link href="/about">About</Link>
-                </li>
-                <li>
-                  <Link href="/contact">Contact</Link>
-                </li>
-              </ul>
+              {routes.map((route, i) => (<div key={i}><Link key={i} href={route.dist}>{route.name}</Link> <br /></div>))}
             </nav>
           </aside>
 
